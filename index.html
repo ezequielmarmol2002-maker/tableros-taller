@@ -296,10 +296,9 @@ function rT(){
   const nr=o.vEsp+o.vRep,kr=nr>RAD_MAX?'r':nr>=25?'y':'g';
   const VE=vehP(),enE=VE.filter(v=>v.est>0),desc=VE.filter(v=>v.est>EST_ALERTA).sort((a,b)=>b.est-a.est),ep=avg(VE.map(v=>v.est));
   $('tG').innerHTML=
-    tile('s3','Radiados ahora · solo vehículos',donut([{l:'A la espera',v:o.vEsp,c:'var(--y)'},{l:'En reparación',v:o.vRep,c:'var(--s1)'}],nr)+(nr>RAD_MAX?`<div class="alrt">⚠ Supera el máximo de ${RAD_MAX}</div>`:`<div class="okb">Dentro del máximo (${RAD_MAX})</div>`))+
-    tile('s3','Radiados vs. máximo permitido ('+RAD_MAX+')',gauge(nr/40,nr,kr,null,[25/40,RAD_MAX/40],true,['0','40'])+`<div class="sub" style="text-align:center">Verde hasta 24 · amarillo 25-30 · rojo más de ${RAD_MAX}</div>`)+
-    tile('s3','Días fuera de servicio · municipales',big(f1(MV.avgFS)+' d',lo(MV.avgFS,15,30),`${MV.m30} con más de 30 días · sin motos`))+
-    tile('s3','Vehículos para descansar',big(desc.length,desc.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(ep)}`))+
+    tile('s4','Radiados ahora · solo vehículos',donut([{l:'A la espera',v:o.vEsp,c:'var(--y)'},{l:'En reparación',v:o.vRep,c:'var(--s1)'}],nr)+(nr>RAD_MAX?`<div class="alrt">⚠ Supera el máximo de ${RAD_MAX}</div>`:`<div class="okb">Dentro del máximo (${RAD_MAX})</div>`))+
+    tile('s4','Radiados vs. máximo permitido ('+RAD_MAX+')',gauge(nr/40,nr,kr,null,[25/40,RAD_MAX/40],true,['0','40'])+`<div class="sub" style="text-align:center">Verde hasta 24 · amarillo 25-30 · rojo más de ${RAD_MAX}</div>`)+
+    tile('s4','Días fuera de servicio · municipales',big(f1(MV.avgFS)+' d',lo(MV.avgFS,15,30),`${MV.m30} con más de 30 días · sin motos`))+
     tile('s12','Tareas diarias',areaTasks('Taller'))+
     tile('s12','Servicio vs. radiado · con estrés promedio por flota',sbars2(CATS)+`<div class="sub">Solo vehículos, sin motos · Servicio = operativos · Radiado = en taller · línea roja = estrés promedio de la flota (Check › Vehículos)</div>`)+
     tile('s6','Top 3 en reparación · días fuera de servicio',hbars(top('R').map(r=>{const k=lo(r[8],15,30);return {l:r[0]+' · '+r[3],v:r[8],c:`var(--${k})`,t:r[8]+' d',tk:'t'+k}}),Math.max(30,...top('R').map(r=>r[8]))))+
@@ -370,7 +369,8 @@ function rL(){
     tile('s4','Disponibles por tipo',donut(porT.map(([l,n])=>({l,v:n,c:TC[l]||'#98a2a9'})),D.length))+
     tile('s3','Disponibles por flota',donut(porF.map(([l,n])=>({l,v:n,c:l==='MSI'?'var(--s1)':'var(--s2)'})),D.length))+
     tile('s12','Días desde la última inspección',`<div class="insp">${ins.map(x=>`<div><b>${x.l}</b><strong class="t${x.d==null?'n':lo(x.d,30,60)}">${x.d==null?'—':x.d}</strong><small>${x.d==null?'falta la fecha':'días · última: '+x.f}</small></div>`).join('')}</div><div class="sub">Verde hasta 30 días · amarillo 31 a 60 · rojo más de 60</div>`)+
-    tile('s12',`Estrés vehicular · ${E2.length} vehículos con estrés`,escala(V2)+`<div class="sub">Toda la flota sin motos (MSI y PBA)</div>`)+
+    tile('s3','Vehículos para descansar',big(D2.length,D2.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(avg(V2.map(v=>v.est)))}`))+
+    tile('s9',`Estrés vehicular · ${E2.length} vehículos con estrés`,escala(V2)+`<div class="sub">Toda la flota sin motos (MSI y PBA)</div>`)+
     tile('s12',`⚠ Para descansar · estrés mayor a ${EST_ALERTA}`,D2.length?`<div class="rest">${D2.map(v=>`<div><strong>${v.est}</strong><b>Móvil ${v.mov}</b><small>${v.mod} · ${v.asig}</small><small>${v.donde}</small></div>`).join('')}</div>`:'<p class="note">Ningún vehículo supera el nivel '+EST_ALERTA+'.</p>')+
     tile('s12','Estrés por vehículo',`<table class="tbl"><tr><th>Móvil</th><th class="hx">Patente</th><th>Vehículo</th><th class="hx">Asignación</th><th class="hx">Dónde está</th><th style="text-align:right">Estrés</th></tr>${E2.sort((a,b)=>b.est-a.est).map(v=>{const k=v.est>6?'r':v.est>EST_ALERTA?'y':'g';return `<tr><td><b>${v.mov}</b></td><td class="hx">${v.pat}</td><td>${v.mod}</td><td class="hx">${v.asig}</td><td class="hx">${v.donde}</td><td class="n"><span class="pill ${k}">${v.est}</span></td></tr>`}).join('')}</table><div class="sub">Solo vehículos con estrés 1 o más · ${V2.length-E2.length} vehículos en 0</div>`)+
     tile('s6','Tiempo promedio para sacar un servicio · por turno',`<div class="ph"><b>Mañana · Tarde · Noche</b>Falta el dato: en el parte necesito la hora en que arranca el turno y la hora en que sale cada servicio. Con eso calculo el promedio por turno.</div>`)+
