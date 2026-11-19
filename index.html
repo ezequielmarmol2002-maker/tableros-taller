@@ -97,21 +97,33 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--s1);outline-offset:
 section[hidden]{display:none}
 @media(max-width:1000px){.s3{grid-column:span 6}.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
 @media(max-width:560px){.s3{grid-column:span 12}.lgd{display:none}.hm{grid-template-columns:minmax(0,1fr) repeat(3,minmax(50px,4.5em))}.hm .m{display:none}}
+.beta{font-size:11px;background:#F2C230;color:#222;border-radius:4px;padding:2px 6px;vertical-align:middle;margin-left:6px;font-weight:700}
+.betab{background:#fff4cc;color:#5a4500;border-bottom:1px solid #e8d48a;padding:7px 16px;font-size:13px;text-align:center}
+.lnk{font-size:13px;font-weight:600;color:#167a72;text-decoration:none;border:1px solid #167a72;border-radius:6px;padding:3px 9px;white-space:nowrap}
+.mpie .dn{max-width:720px;margin:0 auto}.mpie .dn{gap:28px;justify-content:center}.mpie .dn svg{width:min(260px,48%)}.mpie .lg{display:grid!important;grid-template-columns:1fr 1fr;gap:6px 22px}.mpie .lg span{margin:0}
+.mot{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:4px 0 12px}
+.mot div{background:var(--hd);border-radius:8px;padding:10px;text-align:center}.mot b{display:block;font-size:30px;line-height:1.1}.mot small{color:var(--mu);font-size:12px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl th{text-align:left;color:var(--mu);font-weight:500;border-bottom:1px solid var(--ln);padding:6px 6px}
+.tbl td{border-bottom:1px solid var(--ln);padding:7px 6px;vertical-align:top}.tbl td.n{text-align:right;white-space:nowrap}
+.pill{display:inline-block;border-radius:10px;padding:1px 8px;font-size:12px;white-space:nowrap}.pill.o{background:#fde7c2;color:#7a4d00}.pill.c{background:#d6ecff;color:#0b4f8a}.pill.r{background:#fbd5d0;color:#8a1c0b}.pill.y{background:#fdf0c2;color:#6b5300}.pill.g{background:#d4f0dc;color:#14632e}
+.btn{display:inline-block;background:#167a72;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none}
+@media(max-width:700px){.mot{grid-template-columns:repeat(2,minmax(0,1fr))}.tbl .hx{display:none}}
 </style>
 </head>
 <body>
 <header>
   <h1>Tablero Comandos</h1>
-  <nav><a href="#taller">Taller</a><a href="#supervision">Jefatura</a><a href="#logistica">Logística</a><a href="#compras">Compras</a><a href="#deposito">Depósito</a></nav>
+  <nav><a href="#taller">Taller</a><a href="#supervision">Jefatura</a><a href="#logistica">Logística</a><a href="#compras">Compras</a><a href="#deposito">Stock crítico</a><a href="#admin">Administración</a></nav>
   <div class="lgd"><span><i style="background:var(--g)"></i>OK</span><span><i style="background:var(--y)"></i>Atención</span><span><i style="background:var(--r)"></i>Crítico</span></div>
 </header>
 <main>
   <section id="taller"><div class="bar0"><h2>Taller</h2><div class="chips psel"></div><small>Fuente: Check · Flota / Taller · 19/11/2026</small></div><div class="grid" id="tG"></div></section>
   <section id="supervision" hidden><div class="bar0"><h2>Jefatura</h2><div class="chips psel"></div><small>Fuente: Check · Flota / Taller · 19/11/2026</small></div><div class="grid" id="sG"></div></section>
   <section id="logistica" hidden><div class="bar0"><h2>Logística</h2><small>Fuente: planilla "SEGUIMIENTO DE TAREAS" · tareas al 19/11/2026</small></div><div class="grid" id="lG"></div></section>
-  <section id="compras" hidden><div class="bar0"><h2>Compras</h2><small>Fuente: planilla de Google (todavía sin datos del Check)</small></div><div class="grid" id="cG"></div></section>
-  <section id="deposito" hidden><div class="bar0"><h2>Depósito</h2><div class="chips" id="dF"></div><small>Fuente: planilla de Google (todavía sin datos del Check)</small></div><div class="grid" id="dG"></div></section>
-  <p class="note">Taller y Jefatura: datos leídos del Check (67 radiados y 1.758 reparados) · Compras y Depósito: planilla "Taller - Fuente de datos Dashboard" · tareas: planilla "SEGUIMIENTO DE TAREAS" (área según la planilla)</p>
+  <section id="compras" hidden><div class="bar0"><h2>Compras</h2><small>Fuente: planilla "SOLICITUD DE PEDIDOS A COMPRAS" · solapas TALLERES 2026 y BIENES Y SERVICIOS 2026 · 19/11/2026</small></div><div class="grid" id="cG"></div></section>
+  <section id="deposito" hidden><div class="bar0"><h2>Stock crítico</h2><small>⚠ Datos de EJEMPLO · falta la lista real de insumos críticos y sus mínimos</small></div><div class="grid" id="dG"></div></section>
+  
+  <p class="note">Taller y Jefatura: datos leídos del Check (67 radiados y 1.758 reparados) · Compras: planilla "SOLICITUD DE PEDIDOS A COMPRAS" · Stock crítico: datos de ejemplo · tareas: planilla "SEGUIMIENTO DE TAREAS" (área según la planilla)</p>
 </main>
 <script>
 {
@@ -189,6 +201,15 @@ const STK=[['Aceite 10W40','Lubricantes',1,0,20,0,'r'],['Líquido de frenos','Fl
  .map(s=>({l:s[0],f:s[1],cr:s[2],st:s[3],mn:s[4],cob:s[5],k:s[6]}));
 const MD=['4','5','6','7','8','9','10','11','12','13','14','15','16','17'],MI=[0,42,0,0,50,0,0,57,0,0,62,0,0,44],ME=[14,21,16,22,22,21,21,18,13,20,18,15,17,16];
 
+
+/* ===== BETA · datos nuevos ===== */
+const MOT={"T":{"15":{"Cubiertas":19,"Aire acondicionado":17,"Motor":8,"Choques":8,"Eléctrico (otros)":6,"Fluidos":5,"Otros":5,"Service":5,"Balizas y sirenas":4,"Vidrios":2,"Baterías":1,"Frenos y tren":1},"30":{"Cubiertas":38,"Aire acondicionado":26,"Choques":21,"Otros":18,"Eléctrico (otros)":17,"Fluidos":14,"Motor":12,"Balizas y sirenas":11,"Frenos y tren":9,"Service":9,"Baterías":8,"Vidrios":5},"90":{"Cubiertas":84,"Otros":64,"Motor":49,"Aire acondicionado":43,"Fluidos":34,"Choques":34,"Frenos y tren":30,"Balizas y sirenas":27,"Eléctrico (otros)":26,"Service":20,"Baterías":17,"Vidrios":16},"365":{"Cubiertas":302,"Motor":156,"Choques":156,"Service":140,"Eléctrico (otros)":133,"Frenos y tren":128,"Otros":122,"Aire acondicionado":115,"Fluidos":90,"Baterías":82,"Balizas y sirenas":80,"Vidrios":66}},"MSI":{"15":{"Cubiertas":19,"Aire acondicionado":17,"Choques":8,"Motor":7,"Eléctrico (otros)":5,"Service":5,"Balizas y sirenas":4,"Fluidos":4,"Otros":4,"Vidrios":2,"Baterías":1},"30":{"Cubiertas":37,"Aire acondicionado":26,"Choques":21,"Otros":17,"Eléctrico (otros)":15,"Fluidos":12,"Motor":11,"Balizas y sirenas":10,"Service":9,"Baterías":8,"Frenos y tren":8,"Vidrios":5},"90":{"Cubiertas":83,"Otros":59,"Aire acondicionado":43,"Motor":43,"Choques":34,"Frenos y tren":29,"Fluidos":28,"Balizas y sirenas":24,"Eléctrico (otros)":23,"Service":19,"Baterías":17,"Vidrios":16},"365":{"Cubiertas":286,"Choques":138,"Motor":134,"Service":121,"Eléctrico (otros)":118,"Aire acondicionado":114,"Frenos y tren":113,"Otros":107,"Baterías":79,"Fluidos":78,"Balizas y sirenas":69,"Vidrios":62}},"PBA":{"15":{"Fluidos":1,"Eléctrico (otros)":1,"Otros":1,"Motor":1,"Frenos y tren":1},"30":{"Fluidos":2,"Eléctrico (otros)":2,"Otros":1,"Motor":1,"Frenos y tren":1,"Cubiertas":1,"Balizas y sirenas":1},"90":{"Fluidos":6,"Motor":6,"Otros":5,"Eléctrico (otros)":3,"Balizas y sirenas":3,"Frenos y tren":1,"Cubiertas":1,"Service":1},"365":{"Motor":22,"Service":19,"Choques":18,"Cubiertas":16,"Eléctrico (otros)":15,"Otros":15,"Frenos y tren":15,"Fluidos":12,"Balizas y sirenas":11,"Vidrios":4,"Baterías":3,"Aire acondicionado":1}}};
+const MOT5=['Choques','Aire acondicionado','Fluidos','Baterías','Cubiertas'];
+let MW=90;
+const SUM=[["Taller","","","","","En observación","","",null,""],["Taller","","","","","En observación","","",14,""],["Taller","","","","","En observación","","",14,""],["Taller","","","","","En observación","","",14,""],["Taller","","","","","En observación","","",null,""],["Bienes y servicios","","","","","En observación","","",357,""],["Bienes y servicios","","","","","En observación","","",266,""],["Bienes y servicios","","","","","En observación","","",34,""],["Bienes y servicios","","","","","En observación","","",9,""],["Bienes y servicios","","","","","En curso","","",9,""],["Bienes y servicios","","","","","En observación","","",3,""],["Bienes y servicios","","","","","En curso","","",3,""],["Bienes y servicios","","","","","En curso","","",1,""]].map(r=>({t:r[0],dep:r[1],mov:r[2],prov:r[3],d:r[4],e:r[5],sum:r[6],f:r[7],dias:r[8],pt:r[9]}));
+const MAIL_COMPRAS='';
+const PUB=true;
+const STK2=[["Aceite 10W40","Lubricantes",0,20,"lt"],["Líquido de frenos","Fluidos",4,10,"lt"],["Refrigerante","Fluidos",9,8,"lt"],["Filtro de aceite","Filtros",22,15,"u"],["Filtro de aire","Filtros",15,10,"u"],["Pastillas de freno","Frenos",6,6,"jgo"],["Baterías 12V 75Ah","Eléctrico",2,4,"u"],["Cubiertas 265/65 R17 (Hilux)","Cubiertas",8,12,"u"],["Cubiertas 205/55 R16 (Virtus)","Cubiertas",14,8,"u"],["Grasa multiuso","Lubricantes",8,4,"kg"],["Aceite 5W30","Lubricantes",48,20,"lt"],["Trapos (kg)","Consumibles",5,10,"kg"]].map(s=>({l:s[0],f:s[1],st:s[2],mn:s[3],u:s[4]}));
 /* ===== Filtro de guardia (compartido por los 4 tableros) ===== */
 const GU=['A','B','C'];let G='',dc='';
 const inG=x=>!G||x.g===G;
@@ -243,6 +264,7 @@ function rT(){
     tile('s3','Días fuera de servicio · municipales',big(f1(MV.avgFS)+' d',lo(MV.avgFS,15,30),`${MV.m30} con más de 30 días · sin motos`))+
     (()=>{const e=FS4.reduce((a,r)=>a+r[2],0);return tile('s3','A la espera · nadie lo tomó',big(e,lo(e,10,20),'Radiados sin taller asignado · Patrullas, Brigadas, Supervisión y QTH'))})()+
     tile('s3','Tareas de taller al día',(()=>{const A=TT.filter(t=>t.a==='Taller'),ok=A.filter(t=>!t.venc&&t.e!=='Bloqueado').length,f=A.length?ok/A.length:1;return gauge(f,ok+'/'+A.length,hi(f,.9,.7),null,[.7,.9],false,['0',A.length])})())+
+    tile('s12','Por qué entran al taller · solo vehículos, sin motos',motTile())+
     tile('s12','Tareas diarias',areaTasks('Taller'))+
     tile('s8','Salen de servicio vs. vuelven · últimos 14 días',`<div class="lg lgr"><span><i style="background:var(--s2)"></i>Salen (radiados)</span><span><i style="background:var(--s1)"></i>Vuelven (reparados)</span><span class="t${o.bal7>=0?'g':o.bal7>=-3?'y':'r'}"><b>Balance 7 días ${o.bal7>0?'+':''}${o.bal7}</b></span></div><div class="fig"><svg id="tW"></svg></div>`)+
     tile('s4','Radiados por tipo',donut([{l:'Vehículos',v:o.n-o.nMoto,c:'var(--s2)'},{l:'Motos',v:o.nMoto,c:'var(--s1)'}],o.n)+`<div class="sub">Reparados hoy: <b>${o.hoy}</b> · últimos 7 días: <b>${o.n7}</b></div>`)+
@@ -304,49 +326,71 @@ function rL(){
   cols($('lS'),X.days,T.map((t,i)=>({c:['var(--s1)','var(--y)','var(--s2)'][i],v:X.serv[t]})));
   cols($('lE'),EQ,T.map((t,i)=>({c:['var(--s1)','var(--y)','var(--s2)'][i],v:EQ.map(e=>Math.round(X.eqavg[t][e]))})));
 }
-/* ===== 3 · COMPRAS ===== */
+/* ===== BETA · por qué entran ===== */
+function motTile(){const m=MOT[PK(P)][MW],tot=Object.values(m).reduce((a,b)=>a+b,0)||1;
+  const ch=`<div class="chips" id="mW" style="margin-bottom:8px">${[[15,'15 días'],[30,'30 días'],[90,'90 días'],[365,'12 meses']].map(([v,l])=>`<button data-v="${v}" class="${v===MW?'on':''}">${l}</button>`).join('')}</div>`;
+  const CC={'Cubiertas':'#2f6fbd','Choques':'#d64545','Aire acondicionado':'#22a6c8','Fluidos':'#e8a317','Baterías':'#7b4fc9'};
+  const five=`<div class="mot">${MOT5.map(k=>{const v=m[k]||0;return `<div style="border-top:4px solid ${CC[k]}"><b style="color:${CC[k]}">${pc(v/tot)}</b><small>${k}</small><div class="sub">${v} entradas</div></div>`}).join('')}</div>`;
+  const all=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  const COL={'Cubiertas':'#2f6fbd','Choques':'#d64545','Aire acondicionado':'#22a6c8','Fluidos':'#e8a317','Baterías':'#7b4fc9'},GR=['#5f6b73','#7d8890','#98a2a9','#b2bac0','#c9cfd3','#dde1e4','#8f9a85'];let gi=0;
+  const parts=all.map(([k,v])=>({l:`${k} · ${pc(v/tot)}`,v,c:COL[k]||GR[gi++%GR.length]}));
+  return ch+five+`<div class="mpie">${donut(parts,tot)}</div>`+
+   `<div class="sub">${tot} entradas al taller en ${MW===365?'los últimos 12 meses':'los últimos '+MW+' días'} (radiados + reparados del Check). Fluidos = refrigeración, hidráulico y pérdidas de agua/aceite/líquidos. Baterías = pedidos que mencionan batería.</div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('#mW button');if(b){MW=+b.dataset.v;rT()}});
+
+/* ===== 3 · COMPRAS (planilla de pedidos) ===== */
 function rC(){
-  const P=PED.filter(inG),pend=P.filter(p=>p.pend),bq=pend.filter(p=>p.b),venc=pend.filter(p=>p.e.startsWith('3')),soc=pend.filter(p=>p.e.startsWith('1'));
-  const rec=P.filter(p=>!p.pend),at=rec.length?rec.filter(p=>p.at).length/rec.length:0,lt=avg(rec.map(p=>p.lt));
-  const provs=[...new Set(PED.map(p=>p.prov))].map(n=>{const R=rec.filter(p=>p.prov===n);return {n,at:R.length?R.filter(p=>p.at).length/R.length:null,lt:avg(R.map(p=>p.lt)),c:R.length}}).filter(x=>x.c).sort((a,b)=>b.at-a.at);
-  const n=s=>pend.filter(p=>p.e.startsWith(s)).length,pri=p=>p.pri.startsWith('1')?0:p.pri.startsWith('2')?1:2;
+  const ob=SUM.filter(x=>x.e==='En observación'),cu=SUM.filter(x=>x.e==='En curso'),ta=SUM.filter(x=>x.t==='Taller'),bs=SUM.filter(x=>x.t!=='Taller');
+  const viejo=SUM.filter(x=>x.dias!=null&&x.dias>30);
+  const row=x=>`<tr><td><span class="pill ${x.e==='En curso'?'c':'o'}">${x.e}</span></td><td><b>${x.d}</b><div class="sub">${x.mov?x.mov+' · ':''}${x.dep}${x.pt?' · '+x.pt:''}</div></td><td class="hx">${x.prov||'—'}</td><td class="hx">${x.sum||'—'}</td><td class="n">${x.f||'sin fecha'}${x.dias!=null?`<div class="sub t${x.dias>30?'r':x.dias>15?'y':'g'}">${x.dias} d</div>`:''}</td></tr>`;
+  const tb=L=>L.length?`<table class="tbl"><tr><th>Estado</th><th>Pedido</th><th class="hx">${L[0].t==='Taller'?'Taller':'Proveedor'}</th><th class="hx">SUM N°</th><th style="text-align:right">Fecha</th></tr>${L.sort((a,b)=>(b.dias??-1)-(a.dias??-1)).map(row).join('')}</table>`:'<p class="note">Nada pendiente.</p>';
   $('cG').innerHTML=
-    tile('s3','Autos parados por compras',big(bq.length,bq.length?'r':'g','Pedidos de autos trabados'))+
-    tile('s3','Pedidos vencidos',big(venc.length,lo(venc.length,0,3),'Pasó la fecha del proveedor'))+
-    tile('s3','Sin orden de compra',big(soc.length,soc.length?'r':'g','Solicitados y sin OC'))+
-    tile('s3','Pendiente de recibir',big(pend.length,'n',money(pend.reduce((a,p)=>a+p.m,0))))+
-    tile('s12','Tareas diarias',areaTasks('Compras'))+
-    tile('s4','Pedidos pendientes por estado',donut([{l:'Sin OC',v:n('1'),c:'var(--r)'},{l:'Pedido al proveedor',v:n('2'),c:'var(--s1)'},{l:'Vencido',v:n('3'),c:'var(--y)'}],pend.length))+
-    tile('s4','Entregas a tiempo',gauge(at,pc(at),hi(at,.9,.75),null,[.75,.9])+`<div class="sub" style="text-align:center">Lead time promedio <b>${f1(lt)} d</b></div>`)+
-    tile('s4','Proveedores · % a tiempo',hbars(provs.map(x=>{const k=hi(x.at,.9,.75);return {l:x.n,v:x.at,c:`var(--${k})`,m:.9,t:pc(x.at),tk:'t'+k}}),1)+`<div class="sub">Línea = meta 90%</div>`)+
-    tile('s12','Compras que frenan autos · por prioridad',cards([...bq].sort((a,b)=>pri(a)-pri(b)||b.d-a.d).map(p=>{const k=p.e.startsWith('3')||pri(p)===0?'r':'y';return {k,b:p.pat,s:p.rep+' · '+p.prov,v:p.d+' d'+(p.e.startsWith('3')?' · vencido':'')}})));
+    tile('s3','En observación',big(ob.length,ob.length?'y':'g','Pedidos frenados para revisar'))+
+    tile('s3','En curso',big(cu.length,'n','Pedidos en trámite'))+
+    tile('s3','Más de 30 días',big(viejo.length,viejo.length?'r':'g','Pendientes hace más de un mes'))+
+    tile('s3','Pendientes por tipo',donut([{l:'Talleres',v:ta.length,c:'var(--s1)'},{l:'Bienes y servicios',v:bs.length,c:'var(--s2)'}],SUM.length))+
+    (PUB?'':tile('s12','Pendientes de suministros · talleres',tb(ta))+
+    tile('s12','Pendientes de suministros · bienes y servicios',tb(bs)))+
+    tile('s12','Tareas diarias',areaTasks('Compras'));
 }
 
-/* ===== 4 · DEPÓSITO ===== */
+/* ===== 4 · STOCK CRÍTICO ===== */
 function rD(){
-  $('dF').innerHTML=[['','Todo el stock'],['c','Solo críticos']].map(([v,l])=>`<button data-v="${v}" class="${v===dc?'on':''}">${l}</button>`).join('');
-  $('dF').onclick=e=>{const b=e.target.closest('button');if(b){dc=b.dataset.v;rD()}};
-  const S=STK.filter(s=>!dc||s.cr),q=S.filter(s=>s.k==='r'&&s.cr).length,bm=S.filter(s=>s.k==='y').length,c=k=>S.filter(s=>s.k===k).length;
-  const E=ENT.filter(e=>!G||e[1]===G),Ed=E.filter(e=>!e[3]),Ep=E.filter(e=>e[3]),m=avg(Ed.map(e=>e[2])),sla=Ed.length?Ed.filter(e=>e[2]<=15).length/Ed.length:0;
-  const al=S.filter(s=>s.k!=='g'||s.cob<7).sort((a,b)=>a.cob-b.cob);
-  const mecs=[...new Set(E.map(e=>e[0]))],mm=mecs.map(x=>Math.round(avg(Ed.filter(e=>e[0]===x).map(e=>e[2]))));
+  const S=STK2.map(s=>({...s,k:s.st===0?'r':s.st<s.mn?'y':'g'})).sort((a,b)=>({r:0,y:1,g:2}[a.k]-{r:0,y:1,g:2}[b.k])||(a.st/a.mn)-(b.st/b.mn));
+  const bajo=S.filter(s=>s.k!=='g'),q=S.filter(s=>s.k==='r');
+  const body=encodeURIComponent('Hola, desde Depósito necesitamos reponer estos insumos que están por debajo del stock mínimo:\n\n'+bajo.map(s=>`- ${s.l}: hay ${s.st} ${s.u}, mínimo ${s.mn} ${s.u} (pedir al menos ${s.mn*2-s.st} ${s.u})`).join('\n')+'\n\nGracias.');
+  const mail=`mailto:${MAIL_COMPRAS}?subject=${encodeURIComponent('Pedido de reposición · stock crítico · '+TAREAS_HOY)}&body=${body}`;
   $('dG').innerHTML=
-    tile('s3','Quiebres críticos',big(q,q?'r':'g',S.filter(s=>s.k==='r').map(s=>s.l).join(' · ')||'Sin quiebres'))+
-    tile('s3','Bajo mínimo',big(bm,bm?'y':'g','Insumos en o bajo el mínimo'))+
-    tile('s3','Entrega a mecánicos',big(Math.round(m)+' min',lo(m,15,30),'Promedio de hoy · meta ≤ 15'))+
-    tile('s3','Esperando repuesto ahora',big(Ep.length,Ep.some(e=>e[2]>15)?'r':Ep.length?'y':'g',Ep.map(e=>e[0]+' '+e[2]+' min').join(' · ')||'Nadie esperando'))+
-    tile('s12','Tareas diarias',areaTasks('Depósito'))+
-    tile('s6','Flujo diario · unidades (noviembre)',`<div class="lg lgr"><span><i style="background:var(--s1)"></i>Ingresos</span><span><i style="background:var(--s2)"></i>Egresos</span></div><div class="fig"><svg id="dW"></svg></div>`)+
-    tile('s3','Estado del stock',donut([{l:'OK',v:c('g'),c:'var(--g)'},{l:'Bajo mínimo',v:c('y'),c:'var(--y)'},{l:'Quiebre',v:c('r'),c:'var(--r)'}],S.length))+
-    tile('s3','Entregas ≤ 15 min',gauge(sla,pc(sla),hi(sla,.9,.75),null,[.75,.9]))+
-    tile('s7','Stock vs. mínimo · días de cobertura',hbars(al.map(s=>({l:s.l,v:s.st,c:`var(--${s.k})`,m:s.mn,t:f1(s.cob)+' d',tk:'t'+(s.cob<3?'r':s.cob<7?'y':'g')})),Math.max(1,...al.map(s=>Math.max(s.st,s.mn)))*1.15)+`<div class="sub">Barra = stock · línea = mínimo · número = días de cobertura</div>`)+
-    tile('s5','Minutos promedio por mecánico · hoy',`<div class="fig"><svg id="dM"></svg></div>`);
-  cols($('dW'),MD,[{c:'var(--s1)',v:MI},{c:'var(--s2)',v:ME}]);
-  cols($('dM'),mecs,[{v:mm,cs:mm.map(v=>`var(--${lo(v,15,30)})`)}]);
+    tile('s3','Sin stock',big(q.length,q.length?'r':'g',q.map(s=>s.l).join(' · ')||'Ninguno'))+
+    tile('s3','Bajo el mínimo',big(bajo.length-q.length,bajo.length-q.length?'y':'g','Hay que reponer'))+
+    tile('s3','Insumos críticos controlados',big(S.length,'n','Con stock mínimo definido'))+
+    tile('s3','Pedir a Compras',`<p class="sub" style="margin:0 0 10px">Arma un mail con los ${bajo.length} insumos bajo el mínimo.</p>${bajo.length?`<a class="btn" href="${mail}">✉ Enviar pedido a Compras</a>`:'<p class="note">Todo en orden.</p>'}`)+
+    tile('s7','Stock vs. mínimo',hbars(S.map(s=>({l:s.l,v:s.st,m:s.mn,c:`var(--${s.k})`,t:s.st+' / '+s.mn+' '+s.u,tk:'t'+s.k})),Math.max(1,...S.map(s=>Math.max(s.st,s.mn)))*1.15)+`<div class="sub">Barra = stock actual · línea = mínimo (el parámetro que dispara el pedido)</div>`)+
+    tile('s5','Qué hay que pedir',bajo.length?`<table class="tbl"><tr><th>Insumo</th><th style="text-align:right">Hay</th><th style="text-align:right">Mín.</th><th style="text-align:right">Pedir</th></tr>${bajo.map(s=>`<tr><td><span class="pill ${s.k}">${s.k==='r'?'Sin stock':'Bajo'}</span> ${s.l}</td><td class="n">${s.st}</td><td class="n">${s.mn}</td><td class="n"><b>${s.mn*2-s.st} ${s.u}</b></td></tr>`).join('')}</table><div class="sub">Sugerido: reponer hasta el doble del mínimo</div>`:'<p class="note">Nada para pedir.</p>')+
+    tile('s12','Tareas diarias',areaTasks('Depósito'));
 }
 
-function all(){chipsG();chipsP();rT();rS();rL();rC();rD()}
-const PG=['taller','supervision','logistica','compras','deposito'];
+/* ===== 5 · ADMINISTRACIÓN · tareas pendientes ===== */
+let AA='';
+function rA(){
+  const L=TT.filter(t=>t.e==='Pendiente'||t.e==='Bloqueado'),ar=[...new Set(L.map(t=>t.a))];
+  $('aF').innerHTML=[['','Todas'],...ar.map(a=>[a,a])].map(([v,l])=>`<button data-v="${v}" class="${v===AA?'on':''}">${l}</button>`).join('');
+  $('aF').onclick=e=>{const b=e.target.closest('button');if(b){AA=b.dataset.v;rA()}};
+  const F=L.filter(t=>!AA||t.a===AA).sort((x,y)=>(y.venc-x.venc)||PRI[x.p]-PRI[y.p]||(y.dias||0)-(x.dias||0));
+  const cr=F.filter(t=>t.p==='Crítica'),bq=F.filter(t=>t.e==='Bloqueado'),sf=F.filter(t=>t.dias==null),vv=F.filter(t=>t.venc);
+  $('aG').innerHTML=
+    tile('s3','Tareas pendientes',big(F.length,'n',AA||'Todas las áreas'))+
+    tile('s3','Críticas',big(cr.length,cr.length?'r':'g',cr.map(t=>t.n).join(' · ')||'Ninguna'))+
+    tile('s3','Vencidas sin empezar',big(vv.length,vv.length?'r':'g','Pasó la fecha y siguen pendientes'))+
+    tile('s3','Bloqueadas · sin fecha',big(bq.length+' · '+sf.length,bq.length?'y':'g','Bloqueadas · sin fecha de inicio'))+
+    tile('s4','Por prioridad',donut([{l:'Crítica',v:F.filter(t=>t.p==='Crítica').length,c:'var(--r)'},{l:'Alta',v:F.filter(t=>t.p==='Alta').length,c:'var(--y)'},{l:'Media',v:F.filter(t=>t.p==='Media').length,c:'var(--s1)'},{l:'Baja',v:F.filter(t=>t.p==='Baja').length,c:'var(--s2)'}],F.length))+
+    tile('s8','Por área',hbars(ar.map(a=>{const x=L.filter(t=>t.a===a);return {l:a,v:x.length,c:'var(--s1)',t:x.length+' · '+x.filter(t=>t.p==='Crítica').length+' críticas'}}),Math.max(1,...ar.map(a=>L.filter(t=>t.a===a).length))))+
+    tile('s12','Tareas pendientes',`<div class="tlist">${F.map(t=>taskRow(t).replace(/<small>[\s\S]*?<\/small>/,'<small>'+t.a+' · '+t.r+(t.o?' · '+t.o:'')+'</small>')).join('')||'<p class="note">Sin tareas pendientes.</p>'}</div><div class="sub">• pendiente · ■ bloqueada · ✗ vencida</div>`);
+}
+
+if(PUB){document.querySelectorAll('.priv,nav a[href="#admin"],#admin').forEach(e=>e.remove())}
+function all(){chipsG();chipsP();rT();rS();rL();rC();rD();if(!PUB)rA()}
+const PG=['taller','supervision','logistica','compras','deposito'].concat(PUB?[]:['admin']);
 function show(id){const cur=PG.includes(id)?id:'taller';PG.forEach(p=>{$(p).hidden=p!==cur;const a=document.querySelector(`nav a[href="#${p}"]`);if(a)a.classList.toggle('on',p===cur)});try{window.scrollTo(0,0)}catch(e){}}
 function go(){let h='';try{h=location.hash.slice(1)}catch(e){}show(h)}
 document.querySelector('nav').addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();const id=a.getAttribute('href').slice(1);show(id);try{history.replaceState(null,'','#'+id)}catch(e){}});
