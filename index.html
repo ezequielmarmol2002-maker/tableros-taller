@@ -363,14 +363,14 @@ function rL(){
   const V2=VEH.filter(v=>v.tipo!=='Moto'),E2=V2.filter(v=>v.est>0),D2=V2.filter(v=>v.est>EST_ALERTA).sort((a,b)=>b.est-a.est);
   $('lG').innerHTML=
     tile('s3','Vehículos disponibles',big(D.length,'n',`de ${VEH.length} · en servicio o en base (incluye motos)`))+
-    ins.map(x=>tile('s3','Última inspección · '+x.l,x.d==null?`<div class="ph"><b>Sin dato</b>Pasame la fecha de la última inspección de ${x.l.toLowerCase()}</div>`:big(x.d+' días',lo(x.d,30,60),`desde el ${x.f} · ${x.s}`))).join('')+
+    tile('s3','Vehículos para descansar',big(D2.length,D2.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(avg(V2.map(v=>v.est)))}`))+
+    ins.map(x=>tile('s2','Última inspección · '+x.l,x.d==null?`<div class="ph"><b>Sin dato</b>Pasame la fecha de la última inspección de ${x.l.toLowerCase()}</div>`:big(x.d+' d',lo(x.d,30,60),`días desde el ${x.f}`))).join('')+
     tile('s12','Tareas diarias',areaTasks('Logística'))+
     tile('s5','Disponibles por área',hbars(porA.slice(0,12).map(([l,n])=>({l,v:n,c:'var(--s1)'})),porA.length?porA[0][1]:1)+`<div class="sub">${porA.length>12?'Se muestran las 12 áreas con más vehículos · ':''}Check › Vehículos · no en taller</div>`)+
     tile('s4','Disponibles por tipo',donut(porT.map(([l,n])=>({l,v:n,c:TC[l]||'#98a2a9'})),D.length))+
     tile('s3','Disponibles por flota',donut(porF.map(([l,n])=>({l,v:n,c:l==='MSI'?'var(--s1)':'var(--s2)'})),D.length))+
     tile('s12','Días desde la última inspección',`<div class="insp">${ins.map(x=>`<div><b>${x.l}</b><strong class="t${x.d==null?'n':lo(x.d,30,60)}">${x.d==null?'—':x.d}</strong><small>${x.d==null?'falta la fecha':'días · última: '+x.f}</small></div>`).join('')}</div><div class="sub">Verde hasta 30 días · amarillo 31 a 60 · rojo más de 60</div>`)+
-    tile('s3','Vehículos para descansar',big(D2.length,D2.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(avg(V2.map(v=>v.est)))}`))+
-    tile('s9',`Estrés vehicular · ${E2.length} vehículos con estrés`,escala(V2)+`<div class="sub">Toda la flota sin motos (MSI y PBA)</div>`)+
+    tile('s12',`Estrés vehicular · ${E2.length} vehículos con estrés`,escala(V2)+`<div class="sub">Toda la flota sin motos (MSI y PBA)</div>`)+
     tile('s12',`⚠ Para descansar · estrés mayor a ${EST_ALERTA}`,D2.length?`<div class="rest">${D2.map(v=>`<div><strong>${v.est}</strong><b>Móvil ${v.mov}</b><small>${v.mod} · ${v.asig}</small><small>${v.donde}</small></div>`).join('')}</div>`:'<p class="note">Ningún vehículo supera el nivel '+EST_ALERTA+'.</p>')+
     tile('s12','Estrés por vehículo',`<table class="tbl"><tr><th>Móvil</th><th class="hx">Patente</th><th>Vehículo</th><th class="hx">Asignación</th><th class="hx">Dónde está</th><th style="text-align:right">Estrés</th></tr>${E2.sort((a,b)=>b.est-a.est).map(v=>{const k=v.est>6?'r':v.est>EST_ALERTA?'y':'g';return `<tr><td><b>${v.mov}</b></td><td class="hx">${v.pat}</td><td>${v.mod}</td><td class="hx">${v.asig}</td><td class="hx">${v.donde}</td><td class="n"><span class="pill ${k}">${v.est}</span></td></tr>`}).join('')}</table><div class="sub">Solo vehículos con estrés 1 o más · ${V2.length-E2.length} vehículos en 0</div>`)+
     tile('s6','Tiempo promedio para sacar un servicio · por turno',`<div class="ph"><b>Mañana · Tarde · Noche</b>Falta el dato: en el parte necesito la hora en que arranca el turno y la hora en que sale cada servicio. Con eso calculo el promedio por turno.</div>`)+
