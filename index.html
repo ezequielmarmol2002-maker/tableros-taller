@@ -476,15 +476,12 @@ function rD(){
 /* ===== 6 · INFRAESTRUCTURA ===== */
 function rI(){
   const A=TT.filter(t=>t.a==='Infraestructura'),v=A.filter(t=>t.venc),c=A.filter(t=>t.e==='En curso'&&!t.venc),p=A.filter(t=>(t.e==='Pendiente'||t.e==='Bloqueado')&&!t.venc);
-  const M=SUM.filter(x=>/manten/i.test(x.dep));
   $('iG').innerHTML=
     tile('s3','Tareas abiertas',big(A.length,'n','Infraestructura'))+
     tile('s3','Vencidas',big(v.length,v.length?'r':'g',v.map(t=>t.n).join(' · ')||'Ninguna'))+
     tile('s3','En curso',big(c.length,'n',c.map(t=>t.n).join(' · ')||'Ninguna'))+
     tile('s3','Pendientes',big(p.length,p.length?'y':'g',p.map(t=>t.n).join(' · ')||'Ninguna'))+
-    tile('s12','Tareas diarias',`<div class="tlist">${[...A].sort((x,y)=>(y.venc-x.venc)||PRI[x.p]-PRI[y.p]).map(taskRow).join('')||'<p class="note">Sin tareas de infraestructura.</p>'}</div><div class="sub">✗ vencida · ▶ en curso · • pendiente · fuente: planilla "SEGUIMIENTO DE TAREAS" (área Infraestructura)</div>`)+
-    tile('s6','Pedidos a Compras · Mantenimiento',big(M.length,'n','En curso, en observación o pendientes (dependencia Mantenimiento)'))+
-    tile('s6','Próximos indicadores',`<div class="ph"><b>¿Qué querés medir en Infraestructura?</b>Por ejemplo: arreglos edilicios abiertos, mantenimiento de equipos (aires, grupo electrógeno), limpieza o servicios. Pasame la planilla o la lista y lo agrego.</div>`);
+    tile('s12','Tareas diarias',`<div class="tlist">${[...A].sort((x,y)=>(y.venc-x.venc)||PRI[x.p]-PRI[y.p]).map(taskRow).join('')||'<p class="note">Sin tareas de infraestructura.</p>'}</div><div class="sub">✗ vencida · ▶ en curso · • pendiente · fuente: planilla "SEGUIMIENTO DE TAREAS" (área Infraestructura)</div>`);
 }
 
 if(PUB){document.querySelectorAll('.priv').forEach(e=>e.remove())}
