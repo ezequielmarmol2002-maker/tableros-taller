@@ -306,9 +306,10 @@ function rT(){
   const nr=o.vEsp+o.vRep,kr=nr>RAD_MAX?'r':nr>=25?'y':'g';
   const VE=vehP(),enE=VE.filter(v=>v.est>0),desc=VE.filter(v=>v.est>EST_ALERTA).sort((a,b)=>b.est-a.est),ep=avg(VE.map(v=>v.est));
   $('tG').innerHTML=
-    tile('s4','Radiados ahora · solo vehículos',donut([{l:'A la espera',v:o.vEsp,c:'var(--y)'},{l:'En reparación',v:o.vRep,c:'var(--s1)'}],nr)+(nr>RAD_MAX?`<div class="alrt">⚠ Supera el máximo de ${RAD_MAX}</div>`:`<div class="okb">Dentro del máximo (${RAD_MAX})</div>`))+
-    tile('s4','Radiados vs. máximo permitido ('+RAD_MAX+')',gauge(nr/40,nr,kr,null,[25/40,RAD_MAX/40],true,['0','40'])+`<div class="sub" style="text-align:center">Verde hasta 24 · amarillo 25-30 · rojo más de ${RAD_MAX}</div>`)+
-    tile('s4','Días fuera de servicio · municipales',big(f1(MV.avgFS)+' d',lo(MV.avgFS,15,30),`${MV.m30} con más de 30 días · sin motos`))+
+    tile('s3','Disponibilidad · flota',gauge(FLOTA.disp,(FLOTA.disp*100).toFixed(1).replace('.',',')+'%',hi(FLOTA.disp,.9,.8),null,[.8,.9],false,['0','100%'])+`<div class="sub" style="text-align:center">${FLOTA.serv} en servicio de ${FLOTA.tot} · ${FLOTA.tot-FLOTA.serv} fuera de servicio · meta 90%</div>`)+
+    tile('s3','Radiados ahora · solo vehículos',donut([{l:'A la espera',v:o.vEsp,c:'var(--y)'},{l:'En reparación',v:o.vRep,c:'var(--s1)'}],nr)+(nr>RAD_MAX?`<div class="alrt">⚠ Supera el máximo de ${RAD_MAX}</div>`:`<div class="okb">Dentro del máximo (${RAD_MAX})</div>`))+
+    tile('s3','Radiados vs. máximo permitido ('+RAD_MAX+')',gauge(nr/40,nr,kr,null,[25/40,RAD_MAX/40],true,['0','40'])+`<div class="sub" style="text-align:center">Verde hasta 24 · amarillo 25-30 · rojo más de ${RAD_MAX}</div>`)+
+    tile('s3','Días fuera de servicio · municipales',big(f1(MV.avgFS)+' d',lo(MV.avgFS,15,30),`${MV.m30} con más de 30 días · sin motos`))+
     tile('s12','Tareas diarias',areaTasks('Taller'))+
     tile('s12','Servicio vs. radiado · con estrés promedio por flota',sbars2(CATS)+`<div class="sub">Solo vehículos, sin motos · Servicio = operativos · Radiado = en taller · línea roja = estrés promedio de la flota (Check › Vehículos)</div>`)+
     tile('s6','Top 3 en reparación · días fuera de servicio',hbars(top('R').map(r=>{const k=lo(r[8],15,30);return {l:r[0]+' · '+r[3],v:r[8],c:`var(--${k})`,t:r[8]+' d',tk:'t'+k}}),Math.max(30,...top('R').map(r=>r[8]))))+
@@ -335,7 +336,8 @@ function rS(){
     tile('s2','Logística · última inspección',big(insMax+' d',lo(insMax,30,60),'armamento · chalecos y radios sin dato'))+
     tile('s2','Compras pendientes',big(cp,cv?'y':'g',`${cv} con más de 30 días`))+
     tile('s2','Stock crítico',big(sk,sk?'r':'g','librería, papel, baterías e indumentaria bajo el mínimo'))+
-    tile('s3','Tareas vencidas',big(v,v?'r':'g','Todas las áreas'))+tile('s3','Tareas en curso',big(c,'n','Todas las áreas'))+
+    tile('s2','Disponibilidad · flota',big((FLOTA.disp*100).toFixed(1).replace('.',',')+'%',hi(FLOTA.disp,.9,.8),`${FLOTA.serv} en servicio de ${FLOTA.tot} · ${FLOTA.tot-FLOTA.serv} fuera de servicio`))+
+    tile('s2','Tareas vencidas',big(v,v?'r':'g','Todas las áreas'))+tile('s2','Tareas en curso',big(c,'n','Todas las áreas'))+
     tile('s6','Tareas por área',hbars(ar.map(a=>{const x=TT.filter(t=>t.a===a),vv=x.filter(t=>t.venc).length,cc=x.filter(t=>t.e==='En curso'&&!t.venc).length,pp=x.length-vv-cc;return {l:a,v:x.length,c:`var(--${vv?'r':'s1'})`,t:vv+' venc. · '+cc+' en curso · '+pp+' pend.',tk:vv?'tr':''}}),Math.max(1,...ar.map(a=>TT.filter(t=>t.a===a).length))))+
     tile('s12','Todas las tareas · vencidas y en curso',allTasks()+(pe?`<div class="sub">Además hay ${pe} tareas pendientes sin empezar.</div>`:''))+
     tile('s3','Reparación promedio · 30 días',big(f1(o.avg30)+' d',lo(o.avg30,5,10),`${o.n30} reparados · 90 días: ${f1(o.avg90)} d`))+
@@ -372,8 +374,9 @@ function rL(){
   const ins=INSP.map(x=>({l:x[0],f:x[1],d:x[1]?Math.round((HOY-pd(x[1]))/864e5):null,s:x[2]}));
   const V2=VEH.filter(v=>v.tipo!=='Moto'),E2=V2.filter(v=>v.est>0),D2=V2.filter(v=>v.est>EST_ALERTA).sort((a,b)=>b.est-a.est);
   $('lG').innerHTML=
-    tile('s3','Vehículos disponibles',big(D.length,'n',`de ${VM.length} municipales · autos, camionetas y motos de Patrulla, Brigadas, QTH y Supervisión · ${VM.length-D.length} en taller`))+
-    tile('s3','Vehículos para descansar',big(D2.length,D2.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(avg(V2.map(v=>v.est)))}`))+
+    tile('s2','Disponibilidad · flota',big((FLOTA.disp*100).toFixed(1).replace('.',',')+'%',hi(FLOTA.disp,.9,.8),`${FLOTA.serv} en servicio de ${FLOTA.tot} · ${FLOTA.tot-FLOTA.serv} fuera de servicio`))+
+    tile('s2','Vehículos disponibles',big(D.length,'n',`de ${VM.length} municipales · autos, camionetas y motos de Patrulla, Brigadas, QTH y Supervisión · ${VM.length-D.length} en taller`))+
+    tile('s2','Vehículos para descansar',big(D2.length,D2.length?'r':'g',`Estrés mayor a ${EST_ALERTA} · promedio de la flota ${f1(avg(V2.map(v=>v.est)))}`))+
     ins.map(x=>tile('s2','Última inspección · '+x.l,x.d==null?`<div class="ph"><b>Sin dato</b>Pasame la fecha de la última inspección de ${x.l.toLowerCase()}</div>`:big(x.d+' d',lo(x.d,30,60),`días desde el ${x.f}`))).join('')+
     tile('s12','Tareas diarias',areaTasks('Logística'))+
     tile('s7','Disponibles por asignación · municipales',hbars(ASG.map(a=>({l:a==='BRIGADAS'?'Brigada':a==='SUPERVISIÓN'?'Supervisión':a==='QTH'?'QTH':'Patrulla',v:D.filter(x=>x.asig===a).length,c:'var(--s1)'})),Math.max(1,...ASG.map(a=>D.filter(x=>x.asig===a).length)))+`<div class="sub">${ASG.map(a=>a.charAt(0)+a.slice(1).toLowerCase()+': '+D.filter(x=>x.asig===a).length+' de '+VM.filter(x=>x.asig===a).length).join(' · ')} · Check › Vehículos · no en taller</div>`)+
